@@ -188,13 +188,8 @@ func main() {
   // exported logger. See Godoc.
   log.Out = os.Stdout
 
-  // You could set this to any `io.Writer` such as a file
-  // file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY, 0666)
-  // if err == nil {
-  //  log.Out = file
-  // } else {
-  //  log.Info("Failed to log to file, using default stderr")
-  // }
+  //will create a log file like /opt/logs/test_日期{2018_12_13}
+  log.LogFile = "/opt/logs/test"
 
   log.WithFields(logrus.Fields{
     "animal": "walrus",
