@@ -136,17 +136,20 @@ func (logger *Logger) WithTime(t time.Time) *Entry {
 	defer logger.releaseEntry(entry)
 	return entry.WithTime(t)
 }
-
-func (logger *Logger) Tracef(format string, args ...interface{}) {
+func (logger *Logger) ChangeLogTime() {
 	NowDay := time.Now().Format("2006_01_02")
 	if NowDay != logger.DailyOpenDate {
 		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND|os.O_APPEND, 0666)
+		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_APPEND|os.O_APPEND, 0666)
 		if err == nil {
 			logger.Out = file
 			logger.DailyOpenDate = NowDay
 		}
 	}
+}
+
+func (logger *Logger) Tracef(format string, args ...interface{}) {
+	ChangeLogTime()
 	if logger.IsLevelEnabled(TraceLevel) {
 		entry := logger.newEntry()
 		entry.Tracef(format, args...)
@@ -155,15 +158,7 @@ func (logger *Logger) Tracef(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Debugf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(DebugLevel) {
 		entry := logger.newEntry()
 		entry.Debugf(format, args...)
@@ -172,15 +167,7 @@ func (logger *Logger) Debugf(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Infof(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(InfoLevel) {
 		entry := logger.newEntry()
 		entry.Infof(format, args...)
@@ -189,30 +176,14 @@ func (logger *Logger) Infof(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Printf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	entry := logger.newEntry()
 	entry.Printf(format, args...)
 	logger.releaseEntry(entry)
 }
 
 func (logger *Logger) Warnf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(WarnLevel) {
 		entry := logger.newEntry()
 		entry.Warnf(format, args...)
@@ -221,15 +192,7 @@ func (logger *Logger) Warnf(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Warningf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(WarnLevel) {
 		entry := logger.newEntry()
 		entry.Warnf(format, args...)
@@ -238,15 +201,7 @@ func (logger *Logger) Warningf(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Errorf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(ErrorLevel) {
 		entry := logger.newEntry()
 		entry.Errorf(format, args...)
@@ -255,15 +210,7 @@ func (logger *Logger) Errorf(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Fatalf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(FatalLevel) {
 		entry := logger.newEntry()
 		entry.Fatalf(format, args...)
@@ -273,15 +220,7 @@ func (logger *Logger) Fatalf(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Panicf(format string, args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(PanicLevel) {
 		entry := logger.newEntry()
 		entry.Panicf(format, args...)
@@ -290,15 +229,7 @@ func (logger *Logger) Panicf(format string, args ...interface{}) {
 }
 
 func (logger *Logger) Trace(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(TraceLevel) {
 		entry := logger.newEntry()
 		entry.Trace(args...)
@@ -307,15 +238,7 @@ func (logger *Logger) Trace(args ...interface{}) {
 }
 
 func (logger *Logger) Debug(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(DebugLevel) {
 		entry := logger.newEntry()
 		entry.Debug(args...)
@@ -324,15 +247,7 @@ func (logger *Logger) Debug(args ...interface{}) {
 }
 
 func (logger *Logger) Info(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(InfoLevel) {
 		entry := logger.newEntry()
 		entry.Info(args...)
@@ -341,30 +256,14 @@ func (logger *Logger) Info(args ...interface{}) {
 }
 
 func (logger *Logger) Print(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	entry := logger.newEntry()
 	entry.Info(args...)
 	logger.releaseEntry(entry)
 }
 
 func (logger *Logger) Warn(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(WarnLevel) {
 		entry := logger.newEntry()
 		entry.Warn(args...)
@@ -373,15 +272,7 @@ func (logger *Logger) Warn(args ...interface{}) {
 }
 
 func (logger *Logger) Warning(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(WarnLevel) {
 		entry := logger.newEntry()
 		entry.Warn(args...)
@@ -390,15 +281,7 @@ func (logger *Logger) Warning(args ...interface{}) {
 }
 
 func (logger *Logger) Error(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(ErrorLevel) {
 		entry := logger.newEntry()
 		entry.Error(args...)
@@ -407,15 +290,7 @@ func (logger *Logger) Error(args ...interface{}) {
 }
 
 func (logger *Logger) Fatal(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(FatalLevel) {
 		entry := logger.newEntry()
 		entry.Fatal(args...)
@@ -425,15 +300,7 @@ func (logger *Logger) Fatal(args ...interface{}) {
 }
 
 func (logger *Logger) Panic(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(PanicLevel) {
 		entry := logger.newEntry()
 		entry.Panic(args...)
@@ -442,15 +309,7 @@ func (logger *Logger) Panic(args ...interface{}) {
 }
 
 func (logger *Logger) Traceln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(TraceLevel) {
 		entry := logger.newEntry()
 		entry.Traceln(args...)
@@ -459,15 +318,7 @@ func (logger *Logger) Traceln(args ...interface{}) {
 }
 
 func (logger *Logger) Debugln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(DebugLevel) {
 		entry := logger.newEntry()
 		entry.Debugln(args...)
@@ -476,15 +327,7 @@ func (logger *Logger) Debugln(args ...interface{}) {
 }
 
 func (logger *Logger) Infoln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(InfoLevel) {
 		entry := logger.newEntry()
 		entry.Infoln(args...)
@@ -493,30 +336,14 @@ func (logger *Logger) Infoln(args ...interface{}) {
 }
 
 func (logger *Logger) Println(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	entry := logger.newEntry()
 	entry.Println(args...)
 	logger.releaseEntry(entry)
 }
 
 func (logger *Logger) Warnln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(WarnLevel) {
 		entry := logger.newEntry()
 		entry.Warnln(args...)
@@ -525,15 +352,7 @@ func (logger *Logger) Warnln(args ...interface{}) {
 }
 
 func (logger *Logger) Warningln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(WarnLevel) {
 		entry := logger.newEntry()
 		entry.Warnln(args...)
@@ -542,15 +361,7 @@ func (logger *Logger) Warningln(args ...interface{}) {
 }
 
 func (logger *Logger) Errorln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(ErrorLevel) {
 		entry := logger.newEntry()
 		entry.Errorln(args...)
@@ -559,15 +370,7 @@ func (logger *Logger) Errorln(args ...interface{}) {
 }
 
 func (logger *Logger) Fatalln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(FatalLevel) {
 		entry := logger.newEntry()
 		entry.Fatalln(args...)
@@ -577,15 +380,7 @@ func (logger *Logger) Fatalln(args ...interface{}) {
 }
 
 func (logger *Logger) Panicln(args ...interface{}) {
-	NowDay := time.Now().Format("2006_01_02")
-	if NowDay != logger.DailyOpenDate {
-		fName := fmt.Sprintf("%s_%s", logger.LogFile, NowDay)
-		file, err := os.OpenFile(fName, os.O_CREATE|os.O_WRONLY|os.O_WRONLY|os.O_APPEND, 0666)
-		if err == nil {
-			logger.Out = file
-			logger.DailyOpenDate = NowDay
-		}
-	}
+	ChangeLogTime()
 	if logger.IsLevelEnabled(PanicLevel) {
 		entry := logger.newEntry()
 		entry.Panicln(args...)
